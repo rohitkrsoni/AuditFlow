@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using AuditFlow.API.Application.Behaviours;
 using AuditFlow.API.Infrastructure.Auth;
 using AuditFlow.API.Infrastructure.Configurations;
 
@@ -21,7 +22,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
+        services.AddMediatR(options =>
+        {
+            options.RegisterServicesFromAssemblies(typeof(Program).Assembly);
+            options.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+
+        });
 
         services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
         services.AddFluentValidationAutoValidation();
