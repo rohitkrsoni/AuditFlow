@@ -15,7 +15,7 @@ public static class WebApplicationBuilderExtensions
 
         builder.Services
             .AddApplicationServices()
-            .AddInfrastructureServices(builder.Configuration)
+            .AddInfrastructureServices(builder.Configuration, builder.Environment)
             .AddWebServices();
 
         return builder;

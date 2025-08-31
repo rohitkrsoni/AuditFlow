@@ -5,6 +5,8 @@ using System.Text.Json.Serialization;
 using AuditFlow.API.Application.Behaviours;
 using AuditFlow.API.Infrastructure.Auth;
 using AuditFlow.API.Infrastructure.Configurations;
+using AuditFlow.API.Infrastructure.Persistence;
+using AuditFlow.API.Infrastructure.Services;
 
 using FluentValidation;
 
@@ -13,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
@@ -43,17 +46,24 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
-        // Example
-        // services.AddDbContext<AppDbContext>(...);
-        // services.AddScoped<IUserRepository, UserRepository>();
-        // services.AddSingleton<ISmtpClient, SmtpClient>();
+        services.AddScoped<ICurrentUserService, DefaultCurrentUserService>();
+        services.AddScoped<IDateTimeService, DateTimeService>();
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
-        // Change the parameters as per the requirements
+        services.AddDbContext<ApplicationDbContext>((serviceProvider, opts) =>
+        {
+            opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+
+            if (environment.IsDevelopment())
+            {
+                opts.EnableSensitiveDataLogging()
+                    .EnableDetailedErrors();
+            }
+        });
 
         services.AddAuthenticationServices(configuration);
-
 
         return services;
     }
