@@ -24,10 +24,10 @@ public static class WebApplicationExtensions
 
         app.UseExceptionHandler();
         app.UseStatusCodePages();
+        app.UseAuthorization();
 
         // Controllers wouldn't work without this
         app.MapControllers();
-        app.UseAuthorization();
         app.UseSerilogRequestLogging();
 
         return app;

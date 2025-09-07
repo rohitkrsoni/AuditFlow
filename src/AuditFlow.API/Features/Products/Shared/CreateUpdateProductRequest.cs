@@ -1,5 +1,4 @@
-﻿using AuditFlow.API.Domain.Enums;
-using AuditFlow.API.Features.Products.CreateProduct;
+using AuditFlow.API.Domain.Enums;
 
 using FluentValidation;
 
