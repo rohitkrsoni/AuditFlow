@@ -1,4 +1,4 @@
-﻿using AuditFlow.API.Domain.Common;
+using AuditFlow.API.Domain.Common;
 using AuditFlow.API.Domain.Enums;
 
 namespace AuditFlow.API.Domain.Entities;
@@ -32,5 +32,14 @@ public class Product : BaseEntity
   public static Product Create(string name, double price, string description, string imageUrl, Category category, Size size)
   {
     return new Product(name, price, description, imageUrl, category, size);
+  }
+  public void Update(string name, double price, string description, string imageUrl, Category category, Size size)
+  {
+    Name = name;
+    Price = price;
+    Description = description;
+    ImageUrl = imageUrl;
+    Category = category;
+    Size = size;
   }
 }
