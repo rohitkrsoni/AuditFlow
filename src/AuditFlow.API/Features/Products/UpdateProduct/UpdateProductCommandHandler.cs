@@ -33,7 +33,7 @@ internal sealed class UpdateProductCommandHandler : ICommandHandler<UpdateProduc
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return await Task.FromResult(Result.Ok(CreateResponse(product)));
+        return Result.Ok(CreateResponse(product));
     }
 
     private static void UpdateProduct(Product product, UpdateProductCommand updateProductCommand)

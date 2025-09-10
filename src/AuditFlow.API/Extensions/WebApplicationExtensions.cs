@@ -16,7 +16,7 @@ public static class WebApplicationExtensions
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "OWUSportsWebAPI v1");
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuditFlowAPI v1");
             c.RoutePrefix = string.Empty;
         });
 

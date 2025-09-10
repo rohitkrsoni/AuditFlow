@@ -19,8 +19,8 @@ namespace AuditFlow.API.Features.Products.GetProduct;
 public sealed class GetProductEndpoint: EndpointBase
 {
     [HttpGet("{id:guid}")]
-    [SwaggerOperation(Tags = [nameof(Product)])]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateUpdateProductResponse))]
+    [SwaggerOperation(Tags = [nameof(Products)])]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<CreateUpdateProductResponse>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     public async Task<IActionResult> Handle([FromRoute] Guid id, [FromServices] IMediator mediator)

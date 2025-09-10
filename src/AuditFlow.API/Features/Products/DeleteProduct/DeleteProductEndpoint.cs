@@ -9,6 +9,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Swashbuckle.AspNetCore.Annotations;
+
 namespace AuditFlow.API.Features.Products.DeleteProduct;
 
 [Route(ApiRoute.ProductRoute)]
@@ -24,6 +26,7 @@ public sealed class DeleteProductEndpoint : EndpointBase
     /// <response code="401">The request lacks valid authentication credentials</response>
     /// <response code="404">The Product Id provided is invalid</response>
     [HttpDelete("{id}")]
+    [SwaggerOperation(Tags = [nameof(Products)])]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]

@@ -13,9 +13,9 @@ namespace AuditFlow.API.Features.Products.GetProducts;
 
 internal sealed class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, PaginatedResponse<CreateUpdateProductResponse>>
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IApplicationDbContext _dbContext;
 
-    public GetProductsQueryHandler(ApplicationDbContext dbContext)
+    public GetProductsQueryHandler(IApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }

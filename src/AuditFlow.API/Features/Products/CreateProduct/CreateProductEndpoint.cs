@@ -16,7 +16,7 @@ public sealed class CreateProductEndpoint : EndpointBase
 {
 
   [HttpPost("")]
-  [SwaggerOperation(Tags = [nameof(Features)])]
+  [SwaggerOperation(Tags = [nameof(Products)])]
   [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateUpdateProductResponse))]
   [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
   [AllowAnonymous]

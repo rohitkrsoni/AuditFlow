@@ -30,5 +30,5 @@ public sealed record PaginatedResponse<T>
     /// <summary>
     /// The number of pages available
     /// </summary>
-    public int TotalPages => (TotalRecords - 1) / PageSize + 1;
+    public int TotalPages => TotalRecords == 0 ? 0 : (TotalRecords + PageSize - 1) / PageSize;
 }

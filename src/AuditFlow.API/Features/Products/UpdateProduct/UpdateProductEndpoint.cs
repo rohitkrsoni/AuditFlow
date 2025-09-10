@@ -17,13 +17,13 @@ public sealed class UpdateProductEndpoint : EndpointBase
 {
 
   [HttpPut("{id:guid}")]
-  [SwaggerOperation(Tags = [nameof(Features)])]
-  [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateUpdateProductResponse))]
+  [SwaggerOperation(Tags = [nameof(Products)])]
+  [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(CreateUpdateProductResponse))]
   [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
   [AllowAnonymous]
-  public async Task<IActionResult> Handle(UpdateProductRequest updateProductRequest, [FromServices] IMediator mediator)
+  public async Task<IActionResult> Handle([FromRoute] Guid id, [FromBody] CreateUpdateProductRequest updateProductRequest, [FromServices] IMediator mediator)
   {
-    var command = new UpdateProductCommand(new ProductId(updateProductRequest.Id), updateProductRequest.Request);
+    var command = new UpdateProductCommand(new ProductId(id), updateProductRequest);
     var commandResult = await mediator.Send(command);
     return HandlerResult(commandResult, System.Net.HttpStatusCode.Accepted);
   }

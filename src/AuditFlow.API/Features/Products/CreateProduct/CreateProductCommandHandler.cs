@@ -37,7 +37,7 @@ internal sealed class CreateProductCommandHandler : ICommandHandler<CreateProduc
             product.Size
         );
 
-        return await Task.FromResult(Result.Ok(response));
+        return Result.Ok(response);
     }
 
     private static Product CreateProduct(CreateProductCommand createProductCommand)
