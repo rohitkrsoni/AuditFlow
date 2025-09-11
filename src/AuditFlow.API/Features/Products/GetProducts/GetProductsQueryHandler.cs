@@ -54,7 +54,7 @@ internal sealed class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, 
 
         var response = new PaginatedResponse<CreateUpdateProductResponse>(
             items: items,
-            pageIndex: paged.PageNumber,
+            pageNumber: paged.PageNumber,
             pageSize: paged.PageSize,
             totalRecords: paged.TotalRecords
         );

@@ -13,9 +13,9 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.EntityFrameworkCore;
 
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
@@ -80,7 +80,11 @@ public static class DependencyInjection
 
         services.AddEndpointsApiExplorer();
 
-        services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuditFlowAPI", Version = "v1" }));
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuditFlowAPI", Version = "v1" });
+            c.EnableAnnotations();
+        });
 
         services.AddHealthChecks();
 
@@ -117,6 +121,7 @@ public static class DependencyInjection
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     RequireExpirationTime = true,
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(jwtConfig.SecretKey)),
                 };

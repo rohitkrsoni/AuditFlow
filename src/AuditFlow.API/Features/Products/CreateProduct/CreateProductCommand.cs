@@ -9,24 +9,24 @@ public sealed record CreateProductCommand(CreateUpdateProductRequest Request) : 
 
 internal sealed class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
-  public CreateProductCommandValidator()
-  {
-    RuleFor(x => x.Request.Name).NotEmpty();
+    public CreateProductCommandValidator()
+    {
+        RuleFor(x => x.Request.Name).NotEmpty();
 
-    RuleFor(x => x.Request.Price)
-      .GreaterThan(0)
-      .WithMessage("Product price must be greater than zero.");
+        RuleFor(x => x.Request.Price)
+          .GreaterThan(0)
+          .WithMessage("Product price must be greater than zero.");
 
-    RuleFor(x => x.Request.Description).NotEmpty();
+        RuleFor(x => x.Request.Description).NotEmpty();
 
-    RuleFor(x => x.Request.ImageUrl).NotEmpty();
+        RuleFor(x => x.Request.ImageUrl).NotEmpty();
 
-    RuleFor(x => x.Request.Category)
-      .IsInEnum()
-      .WithMessage("Invalid category specified.");
+        RuleFor(x => x.Request.Category)
+          .IsInEnum()
+          .WithMessage("Invalid category specified.");
 
-    RuleFor(x => x.Request.Size)
-      .IsInEnum()
-      .WithMessage("Invalid size specified.");
-  }
+        RuleFor(x => x.Request.Size)
+          .IsInEnum()
+          .WithMessage("Invalid size specified.");
+    }
 }

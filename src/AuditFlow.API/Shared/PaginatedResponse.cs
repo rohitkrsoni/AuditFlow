@@ -2,10 +2,10 @@ namespace AuditFlow.API.Shared;
 
 public sealed record PaginatedResponse<T>
 {
-    public PaginatedResponse(IEnumerable<T> items, int pageIndex, int pageSize, int totalRecords)
+    public PaginatedResponse(IEnumerable<T> items, int pageNumber, int pageSize, int totalRecords)
     {
         Items = items;
-        PageIndex = pageIndex;
+        PageNumber = pageNumber;
         PageSize = pageSize;
         TotalRecords = totalRecords;
     }
@@ -15,7 +15,7 @@ public sealed record PaginatedResponse<T>
     /// <summary>
     /// The page number of the results to be returned
     /// </summary>
-    public int PageIndex { get; }
+    public int PageNumber { get; }
 
     /// <summary>
     /// The number of results to be returned per page

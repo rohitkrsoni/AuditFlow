@@ -18,8 +18,8 @@ public sealed class GetProductsEndpoint : EndpointBase
 {
     [HttpGet("")]
     [SwaggerOperation(Tags = [nameof(Products)])]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateUpdateProductResponse))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<CreateUpdateProductResponse>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))] // To Be checked what happens when no product returned
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     [AllowAnonymous]
     public async Task<IActionResult> Handle([FromQuery] GetProductsRequest getProductsRequest, [FromServices] IMediator mediator)

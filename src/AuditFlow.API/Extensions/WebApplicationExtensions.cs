@@ -6,10 +6,8 @@ public static class WebApplicationExtensions
 {
     public static WebApplication UseCustomMiddleware(this WebApplication app, IHostEnvironment env)
     {
-        if (env.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
+        app.UseExceptionHandler();
+        app.UseSerilogRequestLogging();
 
         app.UseHttpsRedirection();
 
@@ -21,14 +19,13 @@ public static class WebApplicationExtensions
         });
 
         app.UseAuthentication();
-
-        app.UseExceptionHandler();
-        app.UseStatusCodePages();
         app.UseAuthorization();
+
+        app.UseStatusCodePages();
 
         // Controllers wouldn't work without this
         app.MapControllers();
-        app.UseSerilogRequestLogging();
+        app.MapHealthChecks("/health");
 
         return app;
     }

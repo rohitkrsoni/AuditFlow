@@ -15,18 +15,18 @@ namespace AuditFlow.API.Features.Products.CreateProduct;
 public sealed class CreateProductEndpoint : EndpointBase
 {
 
-  [HttpPost("")]
-  [SwaggerOperation(Tags = [nameof(Products)])]
-  [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateUpdateProductResponse))]
-  [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
-  [AllowAnonymous]
-  public async Task<IActionResult> Handle(CreateUpdateProductRequest createProductRequest, [FromServices] IMediator mediator)
-  {
-    var command = new CreateProductCommand(createProductRequest);
-    var commandResult =
-      await mediator.Send(command);
+    [HttpPost("")]
+    [SwaggerOperation(Tags = [nameof(Products)])]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateUpdateProductResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [AllowAnonymous]
+    public async Task<IActionResult> Handle(CreateUpdateProductRequest createProductRequest, [FromServices] IMediator mediator)
+    {
+        var command = new CreateProductCommand(createProductRequest);
+        var commandResult =
+          await mediator.Send(command);
 
-    return HandlerResult<CreateUpdateProductResponse>(commandResult, System.Net.HttpStatusCode.Created);
-  }
+        return HandlerCreatedAt(commandResult, "GetProductById", new { id = commandResult.Value.Id });
+    }
 
 }

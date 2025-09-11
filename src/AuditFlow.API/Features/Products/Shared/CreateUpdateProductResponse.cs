@@ -1,9 +1,9 @@
-﻿using AuditFlow.API.Domain.Enums;
+using AuditFlow.API.Domain.Enums;
 
 namespace AuditFlow.API.Features.Products.Shared;
 
 public sealed record CreateUpdateProductResponse(
-  Guid? Id,
+  Guid Id,
   string Name,
   double Price,
   string Description,

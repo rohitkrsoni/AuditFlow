@@ -8,6 +8,8 @@ using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
+using Serilog.Filters;
+
 namespace AuditFlow.API.Shared.Endpoints;
 
 [ApiController]
@@ -49,6 +51,24 @@ public abstract class EndpointBase : ControllerBase
           _ => Ok()
       };
 
+    /// <summary>
+    /// Handle result with a 201 Created response and Location header for generic Result type
+    /// </summary>
+    /// <param name="result">The Result object</param>
+    /// <param name="routeName">The name of the route to generate the Location URI</param>
+    /// <param name="routeValues">The route values used to build the URI</param>
+    /// <typeparam name="TResult">The type of the Result</typeparam>
+    /// <returns></returns>
+    protected IActionResult HandlerCreatedAt<TResult>(
+        Result<TResult> result,
+        string routeName,
+        object routeValues)
+    {
+        return result.IsFailed
+            ? Problem(result.Errors)
+            : CreatedAtRoute(routeName, routeValues, result.Value);
+    }
+
 
     /// <summary>
     /// Handler response for PaginatedListQueryResult
@@ -78,7 +98,7 @@ public abstract class EndpointBase : ControllerBase
     /// <returns></returns>
     protected IActionResult Problem(IReadOnlyList<IError> errors)
     {
-        var isValidationError = errors.Any(e => e.Metadata.Any(s => s.Key.ToLower() == "validation"));
+        var isValidationError = errors.Any(e => e.Metadata.ContainsKey(ErrorMetadataType.Validation));
 
         if (isValidationError)
         {
@@ -89,7 +109,7 @@ public abstract class EndpointBase : ControllerBase
         {
             return Problem(
                 statusCode: StatusCodes.Status404NotFound,
-                title: "Not Found",
+                title: ErrorMetadata.NotFound[ErrorMetadataType.NotFound].ToString(),
                 detail: errors[0].Message,
                 type: "https://tools.ietf.org/html/rfc9110#section-15.5.5"
             );
@@ -105,7 +125,11 @@ public abstract class EndpointBase : ControllerBase
         // ToDo:
         // If none of the above we should return 400
         // But we need to extend this class to support 500 errors
-        return BadRequest(CreateValidationProblemDetails(errors));
+        return Problem(
+            statusCode: StatusCodes.Status400BadRequest,
+            title: "Bad Request",
+            detail: errors[0].Message,
+            type: "https://tools.ietf.org/html/rfc9110#section-15.5.1");
     }
 
     static ValidationProblemDetails CreateValidationProblemDetails(IReadOnlyList<IError> errors)
@@ -114,7 +138,8 @@ public abstract class EndpointBase : ControllerBase
 
         foreach (var error in errors)
         {
-            modelStateDictionary.AddModelError(error.Reasons[0].Message, error.Message);
+            var field = error.Metadata.TryGetValue("Field", out var v) && v is string s ? s : "general";
+            modelStateDictionary.AddModelError(field, error.Message);
         }
 
         return new ValidationProblemDetails(modelStateDictionary)

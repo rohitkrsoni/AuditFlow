@@ -15,14 +15,14 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace AuditFlow.API.Features.Products.GetProduct;
 
 [Route(ApiRoute.ProductRoute)]
-[AllowAnonymous]
-public sealed class GetProductEndpoint: EndpointBase
+public sealed class GetProductEndpoint : EndpointBase
 {
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetProductById")]
     [SwaggerOperation(Tags = [nameof(Products)])]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<CreateUpdateProductResponse>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateUpdateProductResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+    [AllowAnonymous]
     public async Task<IActionResult> Handle([FromRoute] Guid id, [FromServices] IMediator mediator)
     {
         var query = new GetProductQuery(new ProductId(id));

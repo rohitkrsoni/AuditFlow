@@ -1,4 +1,5 @@
 using FluentResults;
+
 using MediatR;
 
 namespace AuditFlow.API.Application.Abstractions.Messaging;

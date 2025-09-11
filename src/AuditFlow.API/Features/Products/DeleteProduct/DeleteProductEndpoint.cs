@@ -32,7 +32,7 @@ public sealed class DeleteProductEndpoint : EndpointBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [AllowAnonymous]
-    public async Task<IActionResult> DeleteProduct(Guid id, [FromServices] IMediator mediator)
+    public async Task<IActionResult> Handle([FromRoute] Guid id, [FromServices] IMediator mediator)
     {
         var commandResult =
             await mediator.Send(new DeleteProductCommand(new ProductId(id)));
