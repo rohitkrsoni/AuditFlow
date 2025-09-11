@@ -1,6 +1,23 @@
-@AuditFlow.API_HostAddress = http://localhost:5246
+POST {{AuditFlow.API_HostAddress}}/api/products
+Content-Type: application/json
 
-GET {{AuditFlow.API_HostAddress}}/weatherforecast/
-Accept: application/json
+{
+  "name": "Home Jersey",
+  "price": 79.99,
+  "description": "2025 season",
+  "imageUrl": "https://…",
+  "category": 1,
+  "size": 3
+}
 
 ###
+GET {{AuditFlow.API_HostAddress}}/api/products?pageNumber=1&pageSize=10
+###
+GET {{AuditFlow.API_HostAddress}}/api/products/{{id}}
+###
+PUT {{AuditFlow.API_HostAddress}}/api/products/{{id}}
+Content-Type: application/json
+
+{ … }
+###
+DELETE {{AuditFlow.API_HostAddress}}/api/products/{{id}}
