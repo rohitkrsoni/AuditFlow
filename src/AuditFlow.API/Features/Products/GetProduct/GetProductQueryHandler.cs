@@ -1,14 +1,10 @@
 using AuditFlow.API.Application.Abstractions.Messaging;
 using AuditFlow.API.Application.Common.Errors;
 using AuditFlow.API.Domain.Entities;
-using AuditFlow.API.Features.Products.GetProducts;
 using AuditFlow.API.Features.Products.Shared;
 using AuditFlow.API.Infrastructure.Persistence;
-using AuditFlow.API.Shared;
 
 using FluentResults;
-
-using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 

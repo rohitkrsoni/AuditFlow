@@ -27,7 +27,9 @@ internal sealed class UpdateProductCommandHandler : ICommandHandler<UpdateProduc
             .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
         if (product is null)
+        {
             return Result.Fail(ApplicationErrors.Common.NotFound(nameof(Product), request.Id.Value));
+        }
 
         UpdateProduct(product, request);
 

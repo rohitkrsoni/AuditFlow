@@ -4,4 +4,5 @@ internal static class ApiRoute
 {
     const string BaseApiRoute = "api";
     public const string ProductRoute = $"{BaseApiRoute}/products";
+    public const string DevRoute = $"{BaseApiRoute}/dev";
 }

@@ -6,7 +6,6 @@ using AuditFlow.API.Shared.Endpoints;
 
 using MediatR;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Swashbuckle.AspNetCore.Annotations;
@@ -31,7 +30,6 @@ public sealed class DeleteProductEndpoint : EndpointBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    [AllowAnonymous]
     public async Task<IActionResult> Handle([FromRoute] Guid id, [FromServices] IMediator mediator)
     {
         var commandResult =

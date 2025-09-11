@@ -7,7 +7,6 @@ using AuditFlow.API.Shared.Endpoints;
 
 using MediatR;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Swashbuckle.AspNetCore.Annotations;
@@ -22,7 +21,6 @@ public sealed class GetProductEndpoint : EndpointBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateUpdateProductResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
-    [AllowAnonymous]
     public async Task<IActionResult> Handle([FromRoute] Guid id, [FromServices] IMediator mediator)
     {
         var query = new GetProductQuery(new ProductId(id));

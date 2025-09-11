@@ -63,7 +63,7 @@ public static class DependencyInjection
             }
         });
 
-        services.AddAuthenticationServices(configuration);
+        services.AddAuthenticationServices(configuration, environment);
 
         return services;
     }
@@ -78,14 +78,7 @@ public static class DependencyInjection
                 opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-        services.AddEndpointsApiExplorer();
-
-        services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuditFlowAPI", Version = "v1" });
-            c.EnableAnnotations();
-        });
-
+        ConfigureSwagger(services);
         services.AddHealthChecks();
 
         return services;
@@ -94,7 +87,8 @@ public static class DependencyInjection
 
     private static IServiceCollection AddAuthenticationServices(
       this IServiceCollection services,
-      IConfiguration configuration)
+      IConfiguration configuration,
+      IWebHostEnvironment environment)
     {
         var jwtConfig = configuration
             .GetSection(nameof(JwtConfigurationsSettings))
@@ -112,7 +106,7 @@ public static class DependencyInjection
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
-                options.RequireHttpsMetadata = true;
+                options.RequireHttpsMetadata = !environment.IsDevelopment();
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidAudience = jwtConfig.Audience,
@@ -128,5 +122,48 @@ public static class DependencyInjection
             });
 
         return services;
+    }
+
+    private static void ConfigureSwagger(IServiceCollection services)
+    {
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(swaggerGenOptions =>
+        {
+            swaggerGenOptions.SwaggerDoc("v1", new OpenApiInfo { Title = "AuditFlowAPI", Version = "v1" });
+
+            // Enable [SwaggerOperation] and other annotations
+            swaggerGenOptions.EnableAnnotations();
+
+            var securityScheme = new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please insert JWT token into field",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer",
+                Reference = new OpenApiReference
+                {
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+
+            swaggerGenOptions.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+            swaggerGenOptions.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+            { securityScheme, Array.Empty<string>() }
+            });
+
+            // (Optional, later) XML comments:
+            // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            // swaggerGenOptions.IncludeXmlComments(xmlPath);
+
+            swaggerGenOptions.CustomSchemaIds(s => s.FullName);
+        });
+
+        //services.AddFluentValidationRulesToSwagger();
     }
 }
