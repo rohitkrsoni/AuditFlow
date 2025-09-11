@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -156,12 +157,11 @@ public static class DependencyInjection
             { securityScheme, Array.Empty<string>() }
             });
 
-            // (Optional, later) XML comments:
-            // var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            // var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            // swaggerGenOptions.IncludeXmlComments(xmlPath);
+          var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+          var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+          swaggerGenOptions.IncludeXmlComments(xmlPath);
 
-            swaggerGenOptions.CustomSchemaIds(s => s.FullName);
+          swaggerGenOptions.CustomSchemaIds(s => s.Name);
         });
 
         //services.AddFluentValidationRulesToSwagger();

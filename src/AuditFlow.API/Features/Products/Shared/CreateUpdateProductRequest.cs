@@ -4,6 +4,15 @@ using FluentValidation;
 
 namespace AuditFlow.API.Features.Products.Shared;
 
+/// <summary>
+/// Request body for creating or updating a product.
+/// </summary>
+/// <param name="Name">The product name.</param>
+/// <param name="Price">The product price.</param>
+/// <param name="Description">A description of the product.</param>
+/// <param name="ImageUrl">The product image URL.</param>
+/// <param name="Category">The product category.</param>
+/// <param name="Size">The product size.</param>
 public sealed record CreateUpdateProductRequest(
   string Name,
   double Price,

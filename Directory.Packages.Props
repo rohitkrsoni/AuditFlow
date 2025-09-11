@@ -1,6 +1,11 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;CS0114</NoWarn>
+    <!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors> To Be Checked
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>All</AnalysisMode>-->
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="FluentResults" Version="4.0.0" />

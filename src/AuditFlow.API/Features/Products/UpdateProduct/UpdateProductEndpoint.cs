@@ -14,7 +14,16 @@ namespace AuditFlow.API.Features.Products.UpdateProduct;
 [Route(ApiRoute.ProductRoute)]
 public sealed class UpdateProductEndpoint : EndpointBase
 {
-
+    /// <summary>
+    /// Updates an existing product.
+    /// </summary>
+    /// <param name="id">The Product unique identifier.</param>
+    /// <param name="updateProductRequest">The request object containing the updated details for the product.</param>
+    /// <returns> An IActionResult that contains the result of the product update operation.</returns>
+    /// <response code="200">Product updated successfully.</response>
+    /// <response code="400">The request contains incorrect or missing data.</response>
+    /// <response code="401">The user is not authorized to perform this action.</response>
+    /// <response code="404">The Product Id provided is invalid</response>
     [HttpPut("{id:guid}")]
     [SwaggerOperation(Tags = [nameof(Products)])]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateUpdateProductResponse))]
