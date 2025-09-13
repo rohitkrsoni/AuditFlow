@@ -69,28 +69,6 @@ public abstract class EndpointBase : ControllerBase
             : CreatedAtRoute(routeName, routeValues, result.Value);
     }
 
-
-    /// <summary>
-    /// Handler response for PaginatedListQueryResult
-    /// </summary>
-    /// <param name="result">The Result object</param>
-    /// <typeparam name="TResult">The type of the Result</typeparam>
-    /// <typeparam name="TResponse">The type of the Response</typeparam>
-    /// <returns></returns>
-    //protected IActionResult HandlerResult<TResult, TResponse>(
-    //    Result<PaginatedQueryResult<TResult>> result)
-    //{
-    //  if (result.IsFailed)
-    //  {
-    //    return Problem(result.Errors);
-    //  }
-
-    //  var resultValue = result.Value;
-    //  var items = resultValue as IQueryable<TResponse>;
-
-    //  return Ok(PaginatedQueryResult<TResponse>.CreateAsync(items, resultValue.PageNumber, resultValue.PageSize, new CancellationToken()));
-    //}
-
     /// <summary>
     /// Handle Problem details response
     /// </summary>
@@ -113,13 +91,6 @@ public abstract class EndpointBase : ControllerBase
                 detail: errors[0].Message,
                 type: "https://tools.ietf.org/html/rfc9110#section-15.5.5"
             );
-        }
-
-        var isAuthenticationError = errors.Any(e => e.Metadata.Any(s => s.Key.ToLower() == "Authentication"));
-
-        if (isAuthenticationError)
-        {
-            return Unauthorized();
         }
 
         // ToDo:
