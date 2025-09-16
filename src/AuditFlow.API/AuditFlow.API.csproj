@@ -35,4 +35,8 @@
         <PackageReference Include="MediatR" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AuditFlow.Shared\AuditFlow.Shared.csproj" />
+    </ItemGroup>
+
 </Project>

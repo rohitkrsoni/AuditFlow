@@ -7,6 +7,7 @@ using AuditFlow.API.Application.Behaviours;
 using AuditFlow.API.Infrastructure.Auth;
 using AuditFlow.API.Infrastructure.Configurations;
 using AuditFlow.API.Infrastructure.Persistence;
+using AuditFlow.API.Infrastructure.Persistence.Interceptors;
 using AuditFlow.API.Infrastructure.Services;
 
 using FluentValidation;
@@ -52,10 +53,12 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUserService, DefaultCurrentUserService>();
         services.AddScoped<IDateTimeService, DateTimeService>();
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+        services.AddScoped<AuditInterceptor>();
 
         services.AddDbContext<ApplicationDbContext>((serviceProvider, opts) =>
         {
-            opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                .AddInterceptors(serviceProvider.GetRequiredService<AuditInterceptor>());
 
             if (environment.IsDevelopment())
             {
