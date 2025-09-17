@@ -11,7 +11,7 @@ using AuditFlow.API.Infrastructure.Persistence.Interceptors;
 using AuditFlow.API.Infrastructure.Services;
 
 using FluentValidation;
-
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
@@ -54,6 +54,15 @@ public static class DependencyInjection
         services.AddScoped<IDateTimeService, DateTimeService>();
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddScoped<AuditInterceptor>();
+
+        services.AddMassTransit(x =>
+        {
+            x.UsingAmazonSqs((context, cfg) =>
+            {
+                cfg.Host("ap-southeast-2", _ => {});
+                cfg.ConfigureEndpoints(context);
+            });
+        });
 
         services.AddDbContext<ApplicationDbContext>((serviceProvider, opts) =>
         {

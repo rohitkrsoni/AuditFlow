@@ -3,6 +3,7 @@ using AuditFlow.API.Domain.Common.Interfaces;
 using AuditFlow.API.Infrastructure.Services;
 using AuditFlow.Shared.AuditContracts;
 using AuditFlow.Shared.AuditContracts.Attributes;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -13,14 +14,17 @@ public class AuditInterceptor : SaveChangesInterceptor
 {
     private readonly ICurrentUserService _currentUserService;
     private readonly IDateTimeService _dateTimeService;
-    private readonly ConditionalWeakTable<DbContext, List<DataAuditTransactionDetail>> _state = [];
+    private readonly ConditionalWeakTable<DbContext, List<AuditTransactionDetailMessage>> _state = [];
+    private readonly IPublishEndpoint _endpointPublisher;
 
     public AuditInterceptor(
         ICurrentUserService currentUserService,
-        IDateTimeService dateTimeService)
+        IDateTimeService dateTimeService,
+        IPublishEndpoint endpointPublisher)
     {
         _currentUserService = currentUserService;
         _dateTimeService = dateTimeService;
+        _endpointPublisher = endpointPublisher;
     }
 
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
@@ -58,14 +62,15 @@ public class AuditInterceptor : SaveChangesInterceptor
         var ctx = eventData.Context;
         if (ctx is not null && _state.TryGetValue(ctx, out var details) && details.Count > 0)
         {
-            var transaction = new DataAuditTransaction {
+            var transaction = new AuditTransactionMessage {
+                EventId = Guid.CreateVersion7(),
                 EventDateUtc = _dateTimeService.UtcNow,
                 IdentityUserId = _currentUserService.IdentityId,
                 TransactionDetails = details,
                 AuditSuccess = true
             };
 
-            // TO DO : Publish transaction to aws SNS topic or SQS queue
+            await _endpointPublisher.Publish(transaction, cancellationToken);
             _state.Remove(ctx);
         }
 
@@ -73,16 +78,11 @@ public class AuditInterceptor : SaveChangesInterceptor
 
     }
 
-    public IEnumerable<DataAuditTransactionDetail> CreateAuditDetails(EntityEntry dbEntry, EntityState state)
+    public IEnumerable<AuditTransactionDetailMessage> CreateAuditDetails(EntityEntry dbEntry, EntityState state)
     {
         string entityName = dbEntry.Entity.GetType().Name;
-        string? primaryKeyName = dbEntry.Metadata.FindPrimaryKey()?.Properties[0].Name;
-        string? primaryKeyValue = primaryKeyName == null ? null : dbEntry.CurrentValues[primaryKeyName]?.ToString();
-
-        if (primaryKeyName == null || primaryKeyValue == null)
-        {
-            throw new ArgumentException("Entity must have a primary key defined.");
-        }
+        var primaryKeyName = dbEntry.Metadata.FindPrimaryKey()?.Properties[0].Name;
+        var primaryKeyValue = primaryKeyName != null ? dbEntry.CurrentValues[primaryKeyName]?.ToString() : null;
 
         foreach (var propertyName in dbEntry.OriginalValues.Properties.Select(property => property.Name))
         {
@@ -93,7 +93,7 @@ public class AuditInterceptor : SaveChangesInterceptor
 
             if (state != EntityState.Modified || !Equals(oldValue, newValue))
             {
-                yield return new DataAuditTransactionDetail
+                yield return new AuditTransactionDetailMessage
                 {
                     DataAuditTransactionType = IsSoftDeleteEvent(dbEntry) ?
                         DataAuditTransactionTypes.SoftDelete : ToAuditType(state),
@@ -114,7 +114,7 @@ public class AuditInterceptor : SaveChangesInterceptor
             EntityState.Added => DataAuditTransactionTypes.Insert,
             EntityState.Modified => DataAuditTransactionTypes.Update,
             EntityState.Deleted => DataAuditTransactionTypes.Delete,
-            _ => throw new ArgumentException("Unrecognized entity state: " + state)
+            _ => DataAuditTransactionTypes.Unknown
         };
     }
 
@@ -125,7 +125,7 @@ public class AuditInterceptor : SaveChangesInterceptor
             EntityState.Added => new Tuple<object?, object?>(null, dbEntry.CurrentValues[propertyName]),
             EntityState.Modified => new Tuple<object?, object?>(dbEntry.OriginalValues[propertyName], dbEntry.CurrentValues[propertyName]),
             EntityState.Deleted => new Tuple<object?, object?>(dbEntry.OriginalValues[propertyName], null),
-            _ => throw new ArgumentException("Unrecognized entity state: " + state)
+            _ => new Tuple<object?, object?>(null, null),
         };
     }
 
@@ -142,13 +142,16 @@ public class AuditInterceptor : SaveChangesInterceptor
 
     public override async Task SaveChangesFailedAsync(DbContextErrorEventData eventData, CancellationToken cancellationToken = default)
     {
-        if (eventData.Context == null)
+        var ctx = eventData.Context;
+
+        if (ctx == null)
         {
             return;
         }
 
-        var dataAuditTransaction = new DataAuditTransaction
+        var transaction = new AuditTransactionMessage
         {
+            EventId = Guid.CreateVersion7(),
             EventDateUtc = _dateTimeService.UtcNow,
             IdentityUserId = _currentUserService.IdentityId,
             TransactionDetails = [],
@@ -156,9 +159,10 @@ public class AuditInterceptor : SaveChangesInterceptor
             ErrorMessage = eventData.Exception.Message
         };
 
-        eventData.Context.Set<DataAuditTransaction>().Add(dataAuditTransaction);
-        await eventData.Context.SaveChangesAsync(cancellationToken);
-        await base.SaveChangesFailedAsync(eventData, cancellationToken);
+        await _endpointPublisher.Publish(transaction, cancellationToken);
+
+        _state.Remove(ctx);
+
     }
 
     private static ILookup<EntityState, EntityEntry> GetAuditableEntries(ChangeTracker changeTracker)
@@ -189,3 +193,4 @@ public class AuditInterceptor : SaveChangesInterceptor
     }
 
 }
+
