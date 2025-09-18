@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "AuditFlow.Consumer": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "AWS_PROFILE": "audit-flow-user",
+        "AWS_REGION": "ap-southeast-2"
+      }
+    }
+  }
+}

@@ -96,7 +96,7 @@ public class AuditInterceptor : SaveChangesInterceptor
                 yield return new AuditTransactionDetailMessage
                 {
                     DataAuditTransactionType = IsSoftDeleteEvent(dbEntry) ?
-                        DataAuditTransactionTypes.SoftDelete : ToAuditType(state),
+                        AuditTransactionTypes.SoftDelete : ToAuditType(state),
                     EntityName = entityName,
                     PrimaryKeyValue = primaryKeyValue,
                     PropertyName = propertyName,
@@ -107,14 +107,14 @@ public class AuditInterceptor : SaveChangesInterceptor
         }
     }
 
-    public static DataAuditTransactionTypes ToAuditType(EntityState state)
+    public static AuditTransactionTypes ToAuditType(EntityState state)
     {
         return state switch
         {
-            EntityState.Added => DataAuditTransactionTypes.Insert,
-            EntityState.Modified => DataAuditTransactionTypes.Update,
-            EntityState.Deleted => DataAuditTransactionTypes.Delete,
-            _ => DataAuditTransactionTypes.Unknown
+            EntityState.Added => AuditTransactionTypes.Insert,
+            EntityState.Modified => AuditTransactionTypes.Update,
+            EntityState.Deleted => AuditTransactionTypes.Delete,
+            _ => AuditTransactionTypes.Unknown
         };
     }
 

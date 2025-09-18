@@ -1,6 +1,6 @@
 namespace AuditFlow.Shared.AuditContracts;
 
-public enum DataAuditTransactionTypes
+public enum AuditTransactionTypes
 {
     Unknown = 0,
     Insert = 1,

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-AuditFlow.Consumer-7bff5b1e-ce25-41e1-816b-36201540d8a4</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="MassTransit" />
+    <PackageReference Include="MassTransit.AmazonSQS" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AuditFlow.Shared\AuditFlow.Shared.csproj" />
+  </ItemGroup>
+</Project>

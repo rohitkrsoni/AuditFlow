@@ -2,7 +2,7 @@ namespace AuditFlow.Shared.AuditContracts;
 
 public sealed record class AuditTransactionDetailMessage
 {
-    public DataAuditTransactionTypes DataAuditTransactionType { get; init; } = DataAuditTransactionTypes.Unknown;
+    public AuditTransactionTypes DataAuditTransactionType { get; init; } = AuditTransactionTypes.Unknown;
     public string? EntityName { get; init; }
     public string? PrimaryKeyValue { get; init; }
     public string? PropertyName { get; init; }
