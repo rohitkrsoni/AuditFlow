@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuditFlow.Consumer.Persistence.Migrations
 {
     [DbContext(typeof(AuditDbContext))]
-    [Migration("20250918143831_Initial_Migration")]
+    [Migration("20250919030154_Initial_Migration")]
     partial class Initial_Migration
     {
         /// <inheritdoc />
@@ -35,6 +35,9 @@ namespace AuditFlow.Consumer.Persistence.Migrations
 
                     b.Property<DateTimeOffset>("EventDateUtc")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("IdentityUserId")
                         .IsRequired()

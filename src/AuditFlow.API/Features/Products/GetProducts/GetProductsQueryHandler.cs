@@ -14,10 +14,12 @@ namespace AuditFlow.API.Features.Products.GetProducts;
 internal sealed class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, PaginatedResponse<CreateUpdateProductResponse>>
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ILogger<GetProductsQueryHandler> _logger;
 
-    public GetProductsQueryHandler(IApplicationDbContext dbContext)
+    public GetProductsQueryHandler(IApplicationDbContext dbContext, ILogger<GetProductsQueryHandler> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<Result<PaginatedResponse<CreateUpdateProductResponse>>> Handle(GetProductsQuery query, CancellationToken cancellationToken)
@@ -58,6 +60,9 @@ internal sealed class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, 
             pageSize: paged.PageSize,
             totalRecords: paged.TotalRecords
         );
+
+        _logger.LogInformation("Retrieved {Count} products (Page {PageNumber} of {TotalPages}).",
+            response.Items.Count(), response.PageNumber, response.TotalPages);
 
         return await Task.FromResult(Result.Ok(response));
     }

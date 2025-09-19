@@ -17,6 +17,7 @@ namespace AuditFlow.Consumer.Persistence.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IdentityUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EventDateUtc = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },

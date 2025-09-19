@@ -33,6 +33,9 @@ namespace AuditFlow.Consumer.Persistence.Migrations
                     b.Property<DateTimeOffset>("EventDateUtc")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("IdentityUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

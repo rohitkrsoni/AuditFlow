@@ -12,10 +12,12 @@ namespace AuditFlow.API.Features.Products.DeleteProduct;
 internal sealed class DeleteProductCommandHandler : ICommandHandler<DeleteProductCommand>
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ILogger<DeleteProductCommandHandler> _logger;
 
-    public DeleteProductCommandHandler(IApplicationDbContext dbContext)
+    public DeleteProductCommandHandler(IApplicationDbContext dbContext, ILogger<DeleteProductCommandHandler> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<Result> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
@@ -30,6 +32,8 @@ internal sealed class DeleteProductCommandHandler : ICommandHandler<DeleteProduc
 
         _dbContext.Products.Remove(product);
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation("Product with ID {ProductId} deleted successfully.", request.Id.Value);
 
         return Result.Ok();
 

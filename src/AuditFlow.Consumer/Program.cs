@@ -4,9 +4,19 @@ using AuditFlow.Consumer.Validators;
 using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
 var services = builder.Services;
+
+// setup Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog();
 
 services.AddValidatorsFromAssemblyContaining<AuditTransactionMessageValidator>();
 
