@@ -1,19 +1,28 @@
-using AuditFlow.Shared.AuditContracts;
-using MassTransit;
-using AuditFlow.Consumer.Persistence;
 using AuditFlow.Consumer.Entities;
+using AuditFlow.Consumer.Persistence;
+using AuditFlow.Shared.AuditContracts;
+using FluentValidation;
+using MassTransit;
 
 namespace AuditFlow.Consumer.Consumers;
 
-public sealed class AuditTransactionConsumer(IAuditDbContext dbContext) : IConsumer<AuditTransactionMessage>
+public sealed class AuditTransactionConsumer(IAuditDbContext dbContext, IValidator<AuditTransactionMessage> validator) : IConsumer<AuditTransactionMessage>
 {
     public async Task Consume(ConsumeContext<AuditTransactionMessage> ctx)
     {
+        var validationResult = await validator.ValidateAsync(ctx.Message, ctx.CancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
         var message = ctx.Message;
 
         var auditdetails = GetAuditDetails(message);
         var transaction = new DataAuditTransaction
         {
+            EventId = message.EventId,
             IdentityUserId = message.IdentityUserId!,
             EventDateUtc = message.EventDateUtc,
             TransactionDetails = [.. auditdetails],
@@ -26,21 +35,13 @@ public sealed class AuditTransactionConsumer(IAuditDbContext dbContext) : IConsu
 
     public static IEnumerable<DataAuditTransactionDetail> GetAuditDetails(AuditTransactionMessage auditTransactionMessage)
     {
-        if (auditTransactionMessage.TransactionDetails is null)
-        {
-            yield break;
-        }
 
-        foreach (var detailMessage in auditTransactionMessage.TransactionDetails)
+        foreach (var detailMessage in auditTransactionMessage.TransactionDetails!)
         {
-            if (detailMessage.EntityName is null || detailMessage.PrimaryKeyValue is null || detailMessage.PropertyName is null)
-            {
-                continue;
-            }
 
             yield return new DataAuditTransactionDetail
             {
-                DataAuditTransactionType = (DataAuditTransactionTypes)(int)detailMessage.DataAuditTransactionType,
+                DataAuditTransactionType = (DataAuditTransactionTypes)(int)detailMessage.DataAuditTransactionType!,
                 EntityName = detailMessage.EntityName!,
                 PrimaryKeyValue = detailMessage.PrimaryKeyValue!,
                 PropertyName = detailMessage.PropertyName!,

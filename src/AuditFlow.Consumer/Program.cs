@@ -1,10 +1,14 @@
 using AuditFlow.Consumer.Consumers;
 using AuditFlow.Consumer.Persistence;
+using AuditFlow.Consumer.Validators;
+using FluentValidation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = Host.CreateApplicationBuilder(args);
 var services = builder.Services;
+
+services.AddValidatorsFromAssemblyContaining<AuditTransactionMessageValidator>();
 
 services.AddScoped<IAuditDbContext, AuditDbContext>();
 

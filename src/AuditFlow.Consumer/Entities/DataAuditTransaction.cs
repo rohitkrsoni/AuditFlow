@@ -4,6 +4,8 @@ public class DataAuditTransaction
 {
     public long Id { get; set; }
 
+    public Guid EventId { get; set; }
+
     public required string IdentityUserId { get; set; }
 
     public DateTimeOffset EventDateUtc { get; set; }

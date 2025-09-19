@@ -107,14 +107,14 @@ public class AuditInterceptor : SaveChangesInterceptor
         }
     }
 
-    public static AuditTransactionTypes ToAuditType(EntityState state)
+    public static AuditTransactionTypes? ToAuditType(EntityState state)
     {
         return state switch
         {
             EntityState.Added => AuditTransactionTypes.Insert,
             EntityState.Modified => AuditTransactionTypes.Update,
             EntityState.Deleted => AuditTransactionTypes.Delete,
-            _ => AuditTransactionTypes.Unknown
+            _ => null
         };
     }
 
