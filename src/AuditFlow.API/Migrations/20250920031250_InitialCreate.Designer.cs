@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AuditFlow.API.Infrastructure.Persistence.Migrations
+namespace AuditFlow.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250831131032_InitialCreate")]
+    [Migration("20250920031250_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -72,6 +72,9 @@ namespace AuditFlow.API.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted")
+                        .HasFilter("IsDeleted = 0");
 
                     b.ToTable("Products");
                 });
