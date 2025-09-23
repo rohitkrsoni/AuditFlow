@@ -1,27 +1,41 @@
 {
-  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "http": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "http://localhost:5246",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "AWS_PROFILE": "audit-flow-user",
         "AWS_REGION": "ap-southeast-2"
-      }
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5246"
     },
     "https": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "https://localhost:7080;http://localhost:5246",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "AWS_PROFILE": "audit-flow-user",
         "AWS_REGION": "ap-southeast-2"
-      }
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7080;http://localhost:5246"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "8081",
+        "ASPNETCORE_HTTP_PORTS": "8080",
+
+        "AWS_PROFILE": "audit-flow-user",
+        "AWS_SDK_LOAD_CONFIG": "1",
+        "AWS_REGION": "ap-southeast-2"
+      },
+      // To copy local AWS credentials into the container for development purposes only.
+      "containerRunArguments": "--mount type=bind,src=C:\\Users\\krroh\\.aws,dst=/home/app/.aws,readonly",
+      "publishAllPorts": true,
+      "useSSL": true
     }
-  }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
 }

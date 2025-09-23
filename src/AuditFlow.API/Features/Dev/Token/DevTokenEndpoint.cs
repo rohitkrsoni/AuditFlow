@@ -26,10 +26,10 @@ public sealed class DevTokenEndpoint : EndpointBase
     public IActionResult Handle([FromServices] IConfiguration cfg, [FromServices] IHostEnvironment env)
     {
         // Hide this endpoint outside Development
-        if (!env.IsDevelopment())
-        {
-            return NotFound();
-        }
+        //if (!env.IsDevelopment())
+        //{
+        //    return NotFound();
+        //}
 
         var jwtCfg = cfg.GetSection(nameof(JwtConfigurationsSettings)).Get<JwtConfigurationsSettings>()!;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtCfg.SecretKey));
