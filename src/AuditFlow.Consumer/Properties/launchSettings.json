@@ -1,14 +1,24 @@
 {
-  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "AuditFlow.Consumer": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
         "AWS_PROFILE": "audit-flow-user",
         "AWS_REGION": "ap-southeast-2"
-      }
+      },
+      "dotnetRunMessages": true
+    },
+    "Container Consumer (Dockerfile)": {
+      "commandName": "Docker",
+      "environmentVariables": {
+        "AWS_PROFILE": "audit-flow-user",
+        "AWS_SDK_LOAD_CONFIG": "1",
+        "AWS_REGION": "ap-southeast-2",
+        "ConnectionStrings__DefaultConnection": "Server=host.docker.internal,1400;Database=AuditFlowDB;Trusted_Connection=false;MultipleActiveResultSets=true;Encrypt=false;user id=sa;password=P@ssword1;"
+      },
+      "containerRunArguments": "--mount type=bind,src=C:\\Users\\krroh\\.aws,dst=/home/app/.aws,readonly"
     }
-  }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
 }

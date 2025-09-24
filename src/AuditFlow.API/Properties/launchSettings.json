@@ -26,7 +26,7 @@
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
         "ASPNETCORE_HTTP_PORTS": "8080",
-
+        "ConnectionStrings__DefaultConnection": "Server=host.docker.internal,1400;Database=AuditFlowDB;Trusted_Connection=false;MultipleActiveResultSets=true;Encrypt=false;user id=sa;password=P@ssword1;",
         "AWS_PROFILE": "audit-flow-user",
         "AWS_SDK_LOAD_CONFIG": "1",
         "AWS_REGION": "ap-southeast-2"
