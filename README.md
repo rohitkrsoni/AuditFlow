@@ -140,7 +140,7 @@ You can run locally with either a **local SQL Server install** or a **SQL Server
 docker build -f "src/AuditFlow.API/Dockerfile" -t rohitkrsoni/audit-flow-api:latest .
 ```
 
-**Consumer image** (only if you have a Dockerfile for it):
+**Consumer image**:
 ```bash
 docker build -f "src/AuditFlow.Consumer/Dockerfile" -t rohitkrsoni/audit-flow-consumer:latest .
 ```
@@ -191,7 +191,7 @@ docker push rohitkrsoni/audit-flow-consumer:latest
 ## 🧪 Quick Demo Flow (Hosted API + Local Consumer)
 
 1. **Start Consumer locally** with AWS creds + Azure SQL connection.
-2. **Open hosted API (Swagger)** at `https://<your-render-api-url>/`.
+2. **Open hosted API (Swagger)** at `https://audit-flow-api.onrender.com`.
 3. `POST /dev/token` → get JWT.
 4. Create/update/delete products.
 5. Watch local Consumer logs to see audit events being processed into **the same `AuditFlowDb`**.
